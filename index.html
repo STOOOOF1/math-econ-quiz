@@ -120,6 +120,19 @@ body{font-family:'Tajawal','Segoe UI',Tahoma,sans-serif;background:linear-gradie
 .r-hint-btn:hover{background:rgba(100,150,255,.2)}
 .r-hint-body{background:rgba(100,150,255,.06);border:1px solid rgba(100,150,255,.12);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:.82em;color:#b8d4ff;line-height:1.6;display:none}
 .r-hint-body.show{display:block}
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-box{background:#1e1e3a;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center}
+.modal-box h3{color:#ffd200;margin-bottom:12px;font-size:1.15em}
+.modal-box p{color:#ccc;font-size:.9em;margin-bottom:16px}
+.modal-box input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;font-size:1.1em;text-align:center;font-family:inherit;margin-bottom:14px;outline:none;direction:ltr}
+.modal-box input:focus{border-color:#ffd200}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:10px;border-radius:10px;border:none;font-size:.95em;cursor:pointer;font-family:inherit;font-weight:700;transition:all .2s}
+.modal-actions .btn-ok{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e}
+.modal-actions .btn-ok:hover{transform:translateY(-1px)}
+.modal-actions .btn-cancel{background:rgba(255,255,255,.1);color:#fff}
+.modal-actions .btn-cancel:hover{background:rgba(255,255,255,.18)}
 
 /* Browse */
 .browse-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:clamp(14px,2.5vw,24px);margin-bottom:12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
@@ -229,7 +242,10 @@ body{font-family:'Tajawal','Segoe UI',Tahoma,sans-serif;background:linear-gradie
       <span>✅ <strong id="correctCount">0</strong></span>
       <span>❌ <strong id="wrongCount">0</strong></span>
     </div>
-    <button class="btn-exit" onclick="confirmExit()">✕ خروج</button>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn-exit" onclick="endTest()" style="background:rgba(46,213,115,.2);border-color:rgba(46,213,115,.3);color:#7bed9f">🏁 إنهاء</button>
+      <button class="btn-exit" onclick="confirmExit()">✕ خروج</button>
+    </div>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
   <div id="questionArea" class="fade-in"></div>
@@ -477,7 +493,22 @@ function startRandom(n){
   initTest(shuffled.slice(0,n),"١٠ أسئلة عشوائية")
 }
 
-function startAll(){initTest([...QUESTIONS],"اختبار كافة الأسئلة")}
+function startAll(){
+  // Show modal to choose starting question
+  const div=document.createElement("div");div.className="modal-overlay";div.id="startModal";
+  div.innerHTML=`<div class="modal-box"><h3>📝 اختبار كافة الأسئلة</h3><p>اختر رقم السؤال الذي تريد البدء منه:</p><input type="number" id="startQInput" min="1" max="100" value="1"><div class="modal-actions"><button class="btn-ok" onclick="doStartAll()">بدء</button><button class="btn-cancel" onclick="document.getElementById('startModal').remove()">إلغاء</button></div></div>`;
+  document.body.appendChild(div);
+  setTimeout(()=>document.getElementById("startQInput")?.focus(),100)
+}
+
+function doStartAll(){
+  const inp=document.getElementById("startQInput");
+  let n=parseInt(inp?.value)||1;
+  if(n<1)n=1;if(n>100)n=100;
+  document.getElementById("startModal")?.remove();
+  const qs=QUESTIONS.filter(q=>q.id>=n);
+  initTest(qs,"اختبار كافة الأسئلة (من س"+n+" إلى س100)")
+}
 
 function initTest(qs,title){
   state={questions:qs,current:0,answered:false,checked:false,correct:0,wrong:0,hintShown:false,mode:title,topic:"",history:[]};
@@ -645,6 +676,15 @@ function reviewHint(el){
 }
 
 function confirmExit(){if(confirm("هل تريد الخروج من الاختبار؟"))showMainMenu()}
+
+function endTest(){
+  const ans=state.history.length;
+  if(ans===0){alert("لم يتم الإجابة على أي سؤال بعد");return}
+  if(!confirm("إنهاء الاختبار الآن؟\nتمت الإجابة على "+ans+" من "+state.questions.length+" أسئلة"))return;
+  // Trim questions to only answered ones for result display
+  state.questions=state.questions.slice(0,ans);
+  showResult()
+}
 
 // ====== BROWSE ======
 function showBrowse(){
