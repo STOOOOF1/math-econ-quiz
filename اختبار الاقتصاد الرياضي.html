@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>اختبار الاقتصاد الرياضي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Tajawal','Segoe UI',Tahoma,sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100dvh;color:#fff;display:flex;align-items:center;justify-content:center;padding:12px}
+.container{width:100%;max-width:880px;margin:0 auto}
+.hidden{display:none!important}
+
+/* Main Menu */
+.main-menu{text-align:center}
+.main-menu h1{font-size:clamp(1.5rem,4.5vw,2.4rem);margin-bottom:6px;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900}
+.main-menu .sub{color:#aaa;font-size:clamp(.85rem,2.5vw,1.05rem);margin-bottom:28px;font-weight:500}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.menu-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(18px,3vw,28px) 14px;color:#fff;cursor:pointer;transition:all .3s ease;text-align:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-family:inherit}
+.menu-btn:active{transform:scale(.97)}
+.menu-btn:hover{transform:translateY(-3px);background:rgba(255,255,255,.12);border-color:rgba(255,200,50,.4);box-shadow:0 8px 30px rgba(255,200,50,.12)}
+.menu-btn .icon{font-size:clamp(1.4rem,4vw,2rem);margin-bottom:8px}
+.menu-btn .title{font-size:clamp(.9rem,2.5vw,1.1rem);font-weight:800;margin-bottom:4px}
+.menu-btn .desc{font-size:clamp(.72rem,2vw,.85rem);color:#aaa;font-weight:500}
+.menu-btn.full{grid-column:1/-1}
+
+/* Top Bar */
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.top-bar .section-title{font-size:clamp(1rem,3vw,1.2rem);color:#ffd200;font-weight:800}
+
+/* Test Header */
+.test-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(255,255,255,.06);border-radius:12px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08)}
+.test-header .info{display:flex;gap:clamp(8px,2vw,18px);align-items:center;flex-wrap:wrap}
+.test-header .info span{font-size:clamp(.75rem,2vw,.9rem);color:#ccc;font-weight:500}
+.test-header .info strong{color:#ffd200}
+.btn-exit{background:rgba(255,70,70,.2);border:1px solid rgba(255,70,70,.3);color:#ff6b6b;padding:6px 14px;border-radius:8px;cursor:pointer;transition:all .3s;font-size:clamp(.78rem,2vw,.9rem);font-family:inherit;font-weight:700;white-space:nowrap}
+.btn-exit:hover{background:rgba(255,70,70,.35)}
+.btn-exit:active{transform:scale(.95)}
+
+/* Question Card */
+.question-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(16px,3vw,30px);margin-bottom:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.question-number{color:#ffd200;font-weight:700;font-size:clamp(.82rem,2.2vw,.95rem);margin-bottom:10px}
+.question-text{font-size:clamp(1rem,2.8vw,1.18rem);line-height:1.7;margin-bottom:20px;font-weight:500}
+.options{display:flex;flex-direction:column;gap:8px}
+.option{display:flex;align-items:center;gap:10px;padding:clamp(10px,2vw,14px) clamp(12px,2.5vw,16px);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;transition:all .2s ease;position:relative;font-family:inherit}
+.option:active{transform:scale(.98)}
+.option:hover{background:rgba(255,255,255,.09);border-color:rgba(255,200,50,.25)}
+.option.selected{background:rgba(255,200,50,.12);border-color:#ffd200}
+.option.correct{background:rgba(46,213,115,.15);border-color:#2ed573}
+.option.wrong{background:rgba(255,70,70,.15);border-color:#ff4646}
+.option .letter{width:clamp(24px,4vw,30px);height:clamp(24px,4vw,30px);border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:clamp(.78rem,2vw,.88rem);flex-shrink:0}
+.option.selected .letter{background:#ffd200;color:#1a1a2e}
+.option.correct .letter{background:#2ed573;color:#1a1a2e}
+.option.wrong .letter{background:#ff4646;color:#fff}
+.option .text{flex:1;line-height:1.5;font-size:clamp(.88rem,2.5vw,1rem);font-weight:500}
+.option .mark{font-size:.85em;font-weight:700;margin-right:auto;padding-right:8px}
+.option.correct .mark{color:#2ed573}
+.option.wrong .mark{color:#ff4646}
+
+/* Actions */
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.actions button{flex:1;min-width:clamp(60px,15vw,90px);padding:clamp(9px,2vw,12px) 12px;border:none;border-radius:10px;font-size:clamp(.78rem,2.2vw,.92rem);cursor:pointer;transition:all .25s;font-weight:700;font-family:inherit}
+.actions button:active{transform:scale(.96)}
+.btn-check{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e}
+.btn-check:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 4px 15px rgba(255,210,0,.3)}
+.btn-check:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.btn-hint{background:rgba(100,150,255,.15);color:#88b4ff;border:1px solid rgba(100,150,255,.25)!important}
+.btn-hint:hover{background:rgba(100,150,255,.28)}
+.btn-nav{background:rgba(255,255,255,.1);color:#fff}
+.btn-nav:hover:not(:disabled){background:rgba(255,255,255,.18)}
+.btn-nav:disabled{opacity:.25;cursor:not-allowed;transform:none!important}
+
+/* Hint Box */
+.hint-box{background:rgba(255,200,50,.08);border:1px solid rgba(255,200,50,.25);border-radius:10px;padding:clamp(12px,2.5vw,16px);margin-top:12px;font-size:clamp(.82rem,2.2vw,.95rem);line-height:1.7;color:#ffeaa7;display:none}
+.hint-box.show{display:block}
+.hint-box strong{color:#ffd200}
+
+/* Progress */
+.progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#f7971e,#ffd200);border-radius:2px;transition:width .4s ease}
+
+/* Result */
+.result-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:clamp(24px,5vw,44px);text-align:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.result-card .emoji{font-size:clamp(2.5rem,8vw,3.5rem);margin-bottom:6px}
+.result-card h2{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:800}
+.result-card .score{font-size:clamp(2.5rem,8vw,4rem);font-weight:900;background:linear-gradient(135deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin:8px 0}
+.result-card .details{color:#aaa;font-size:clamp(.95rem,2.5vw,1.1rem);margin-bottom:16px;font-weight:500}
+.result-card .msg{color:#bbb;font-size:clamp(.85rem,2.2vw,.95rem);margin-bottom:20px}
+.result-card .btn-back-main{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;padding:12px 28px;border-radius:10px;cursor:pointer;font-size:clamp(.88rem,2.2vw,1rem);transition:all .3s;font-family:inherit;font-weight:700}
+.result-card .btn-back-main:hover{background:rgba(255,255,255,.18)}
+.result-card .btn-back-main:active{transform:scale(.97)}
+/* ===== Result Review ===== */
+.result-summary{background:rgba(255,255,255,.05);border-radius:14px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-around;text-align:center;flex-wrap:wrap;gap:12px}
+.result-summary .stat{min-width:70px}
+.result-summary .stat-num{font-size:1.6em;font-weight:900}
+.result-summary .stat-lbl{font-size:.8em;color:#aaa;margin-top:2px}
+.result-summary .stat.correct .stat-num{color:#2ed573}
+.result-summary .stat.wrong .stat-num{color:#ff6b6b}
+.result-summary .stat.total .stat-num{color:#ffd200}
+.review-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.r-item{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+.r-head{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .2s;border:none;background:none;color:#fff;width:100%;text-align:right;font-family:inherit;font-size:.95em}
+.r-head:hover{background:rgba(255,255,255,.04)}
+.r-head .r-status{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8em;flex-shrink:0}
+.r-head .r-status.ok{background:rgba(46,213,115,.2);color:#2ed573}
+.r-head .r-status.fail{background:rgba(255,70,70,.2);color:#ff6b6b}
+.r-head .r-qnum{color:#ffd200;font-weight:700;font-size:.82em;min-width:35px}
+.r-head .r-qtext{flex:1;line-height:1.4;font-weight:500;font-size:.92em}
+.r-head .r-arrow{color:#666;font-size:.7em;transition:transform .3s}
+.r-head.open .r-arrow{transform:rotate(180deg)}
+.r-body{padding:0 14px 14px;display:none}
+.r-body.open{display:block}
+.r-ans{padding:8px 12px;border-radius:8px;margin-bottom:6px;font-size:.88em;line-height:1.5}
+.r-ans.yours{background:rgba(255,70,70,.08);border:1px solid rgba(255,70,70,.15);color:#ff8a8a}
+.r-ans.yours.ok{background:rgba(46,213,115,.08);border:1px solid rgba(46,213,115,.15);color:#7bed9f}
+.r-ans.correct{background:rgba(46,213,115,.08);border:1px solid rgba(46,213,115,.15);color:#7bed9f}
+.r-hint-btn{background:rgba(100,150,255,.1);border:1px solid rgba(100,150,255,.18);color:#88b4ff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.82em;font-family:inherit;font-weight:600;transition:all .2s;margin-top:4px}
+.r-hint-btn:hover{background:rgba(100,150,255,.2)}
+.r-hint-body{background:rgba(100,150,255,.06);border:1px solid rgba(100,150,255,.12);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:.82em;color:#b8d4ff;line-height:1.6;display:none}
+.r-hint-body.show{display:block}
+
+/* Browse */
+.browse-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:clamp(14px,2.5vw,24px);margin-bottom:12px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.browse-card .q{font-size:clamp(.88rem,2.4vw,1.02rem);margin-bottom:10px;line-height:1.7;font-weight:500}
+.browse-card .a{color:#2ed573;font-weight:700;font-size:clamp(.82rem,2.2vw,.95rem)}
+.browse-card .topic-tag{display:inline-block;background:rgba(255,200,50,.13);color:#ffd200;padding:2px 10px;border-radius:5px;font-size:clamp(.68rem,1.8vw,.78rem);margin-bottom:6px;font-weight:700}
+
+/* Keys */
+.keys-section{margin-bottom:22px}
+.keys-section h3{color:#ffd200;margin-bottom:10px;font-size:clamp(1rem,2.8vw,1.15rem);padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.1);font-weight:800}
+.keys-section ul{list-style:none}
+.keys-section li{padding:5px 16px 5px 0;position:relative;line-height:1.7;color:#ddd;font-size:clamp(.82rem,2.2vw,.95rem);font-weight:500}
+.keys-section li::before{content:"▸";position:absolute;right:0;color:#ffd200;font-weight:700}
+.keys-section li strong{color:#fff}
+
+/* Filter */
+.filter-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.filter-bar select,.filter-bar input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;padding:10px 14px;border-radius:10px;font-size:clamp(.82rem,2.2vw,.9rem);font-family:inherit;flex:1;min-width:130px;font-weight:500}
+.filter-bar select option{background:#302b63;color:#fff}
+.filter-bar input::placeholder{color:rgba(255,255,255,.35)}
+
+/* Topic */
+.topic-select{text-align:center;margin-bottom:20px}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.topic-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:clamp(14px,2.5vw,20px);color:#fff;cursor:pointer;transition:all .3s;text-align:center;font-family:inherit;font-size:clamp(.88rem,2.4vw,.98rem);font-weight:700}
+.topic-btn:hover{background:rgba(255,255,255,.12);border-color:#ffd200;transform:translateY(-2px)}
+.topic-btn:active{transform:scale(.97)}
+.topic-btn .tcount{display:block;color:#aaa;font-size:clamp(.72rem,2vw,.82rem);margin-top:4px;font-weight:500}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px}
+
+@media(max-width:480px){
+  body{padding:8px}
+  .menu-grid{grid-template-columns:1fr;gap:10px}
+  .test-header{flex-direction:column;gap:8px;padding:10px 12px}
+  .test-header .info{width:100%;justify-content:space-between}
+  .actions{gap:6px}
+  .actions button{min-width:55px;padding:9px 8px;font-size:.78rem}
+  .topic-grid{grid-template-columns:1fr}
+  .filter-bar select,.filter-bar input{min-width:100px}
+}
+
+@media(min-width:768px){
+  .menu-grid{gap:16px}
+  .actions{gap:10px}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+<!-- Main Menu -->
+<div id="mainMenu" class="main-menu">
+  <h1>📊 اختبار الاقتصاد الرياضي</h1>
+  <p class="sub">اختبر فهمك في مبادئ الاقتصاد الرياضي من خلال ١٠٠ سؤال شامل</p>
+  <div class="menu-grid">
+    <button class="menu-btn" onclick="showTopicSelect()">
+      <div class="icon">📚</div>
+      <div class="title">اختبار باختيار الموضوع</div>
+      <div class="desc">اختر موضوعاً واختبر نفسك فيه</div>
+    </button>
+    <button class="menu-btn" onclick="startRandom(10)">
+      <div class="icon">🎲</div>
+      <div class="title">اختبار ١٠ أسئلة عشوائية</div>
+      <div class="desc">أسئلة من جميع المواضيع</div>
+    </button>
+    <button class="menu-btn" onclick="startAll()">
+      <div class="icon">📝</div>
+      <div class="title">اختبار كافة الأسئلة</div>
+      <div class="desc">جميع الأسئلة الـ ١٠٠</div>
+    </button>
+    <button class="menu-btn" onclick="showBrowse()">
+      <div class="icon">📖</div>
+      <div class="title">استعراض جميع الأسئلة</div>
+      <div class="desc">اعرض الأسئلة مع الإجابات الصحيحة</div>
+    </button>
+    <button class="menu-btn full" onclick="showKeys()">
+      <div class="icon">🔑</div>
+      <div class="title">مفاتيح الحل</div>
+      <div class="desc">مفاتيح العبقرية: الخلاصة الشاملة للمراجعة السريعة</div>
+    </button>
+  </div>
+</div>
+
+<!-- Topic Selection -->
+<div id="topicSelect" class="hidden">
+  <div class="top-bar">
+    <span class="section-title">📚 اختر الموضوع</span>
+    <button class="btn-exit" onclick="showMainMenu()">→ رجوع</button>
+  </div>
+  <div class="topic-grid" id="topicGrid"></div>
+</div>
+
+<!-- Test Mode -->
+<div id="testMode" class="hidden">
+  <div class="test-header">
+    <div class="info">
+      <span>📌 <strong id="testTitle">اختبار</strong></span>
+      <span>س<span id="currentNum">1</span> / <span id="totalNum">10</span></span>
+      <span>✅ <strong id="correctCount">0</strong></span>
+      <span>❌ <strong id="wrongCount">0</strong></span>
+    </div>
+    <button class="btn-exit" onclick="confirmExit()">✕ خروج</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div id="questionArea" class="fade-in"></div>
+</div>
+
+<!-- Result -->
+<div id="resultMode" class="hidden" style="padding-bottom:20px">
+  <div class="result-card fade-in" style="margin-bottom:16px">
+    <div class="emoji" id="resultEmoji">🏆</div>
+    <h2 id="resultTitle">النتيجة</h2>
+    <div class="score" id="resultScore">0%</div>
+    <div class="details" id="resultDetails">0 من 0</div>
+    <div class="msg" id="resultMsg" style="margin-bottom:18px;color:#aaa;font-size:.95em"></div>
+    <button class="btn-back-main" onclick="showMainMenu()">⬅ العودة للصفحة الرئيسية</button>
+  </div>
+  <div class="result-summary" id="resultSummary"></div>
+  <div class="review-list" id="reviewList"></div>
+</div>
+
+<!-- Browse Mode -->
+<div id="browseMode" class="hidden">
+  <div class="top-bar">
+    <span class="section-title">📖 جميع الأسئلة مع الإجابات</span>
+    <button class="btn-exit" onclick="showMainMenu()">→ رجوع</button>
+  </div>
+  <div class="filter-bar">
+    <select id="browseFilter" onchange="renderBrowse()">
+      <option value="all">جميع المواضيع</option>
+      <option value="calculus">التفاضل والتكامل</option>
+      <option value="functions">الدوال الرياضية</option>
+      <option value="equilibrium">التوازن الجزئي والكلي</option>
+      <option value="taxes">الضرائب والمرونة</option>
+      <option value="methodology">المنهجية والنظريات</option>
+    </select>
+    <input type="text" id="browseSearch" placeholder="🔍 بحث في الأسئلة …" oninput="renderBrowse()">
+  </div>
+  <div id="browseList"></div>
+</div>
+
+<!-- Keys Mode -->
+<div id="keysMode" class="hidden">
+  <div class="top-bar">
+    <span class="section-title">🔑 مفاتيح الحل: الخلاصة الشاملة للمراجعة</span>
+    <button class="btn-exit" onclick="showMainMenu()">→ رجوع</button>
+  </div>
+  <div id="keysContent"></div>
+</div>
+
+</div>
+
+<script>
+// ====== QUESTION DATA (100 سؤال) ======
+const QUESTIONS = [
+  {id:1,q:"ما المقصود بفرضية ثبات العوامل الأخرى؟",o:["دراسة متغيرات كثيرة","تحدي السعر","دراسة تأثير متغير واحد فقط","جميع ماسبق"],a:2,t:"methodology"},
+  {id:2,q:"ما الفرق الأساسي بين دالة بمتغير واحد Y = f(X) ودالة بمتغيرين Y = f(X₁, X₂)؟",o:["تقتصر على رصد الميل الحدي المنفرد مقابل دراسة معدلات الإحلال المتقاطعة","تفترض ثبات العوامل الأخرى مقابل تحليل التأثير المتزامن لعدة متغيرات","تركز على التوازن الساكن للتابع مقابل دراسة استقرار الأنظمة الديناميكية","تستخدم في قياس التكاليف الكلية مقابل تحليل مرونات الإحلال بين العناصر"],a:1,t:"methodology"},
+  {id:3,q:"لماذا قد لا يعبر الاقتصاد الرياضي بدقة عن الواقع في حالات الأزمات الاقتصادية المفاجئة؟",o:["لعجز النماذج الرياضية عن توصيف التفاعل الديناميكي المعقد لقوى السوق","لعدم كفاية النماذج الكمية في معالجة الانقطاعات الهيكلية المفاجئة","لبروز الأنماط السلوكية غير الرشيدة وانحراف التوقعات عن مسارها","لارتكاز الخوارزميات الرياضية على فرضية كمال المعلومات واستقرار الأنظمة"],a:2,t:"methodology"},
+  {id:4,q:"ما الدور الجوهري للإحصاء عند دمجه في نماذج الاقتصاد الرياضي؟",o:["التحقق التجريبي من النماذج النظرية وتقدير معلمات الدوال الاقتصادية","تحويل البنى النظرية إلى أنظمة معادلات استنتاجية ذات طابع تجريدي","صياغة العلاقات الرياضية بافتراض كمال المعلومات واستقرار السلوك المستقبلي","استخلاص الارتباطات بين المتغيرات بالاعتماد الكلي على المنطق الرياضي الصرف"],a:0,t:"methodology"},
+  {id:5,q:"ما هو وجه التمايز المنهجي بين الاقتصاد الرياضي والاقتصاد القياسي في معالجة النظريات الاقتصادية؟",o:["صياغة الأطر النظرية عبر التجريد مقابل تقدير المعلمات واختبار الفرضيات","اشتقاق القوانين من العلاقات البديهية مقابل بناء النماذج الاستدلالية الصرفة","تحويل السلوك البشري إلى معادلات مقابل دراسة التفاعلات الاجتماعية والسياسية","نمذجة التوازن العام للنظام مقابل تحليل المتغيرات العشوائية والاضطرابات السوقية"],a:1,t:"methodology"},
+  {id:6,q:"أي من الخيارات التالية يمثل أحد المآخذ المنهجية على التوسع في استخدام الاقتصاد الرياضي؟",o:["تقييد التفاعلات الديناميكية للسوق ضمن أطر جبرية تتسم بالثبات الهيكلي","استبدال السرد الاستنتاجي بنماذج كمية تعتمد كلياً على التماثل الرياضي","تحويل الأنماط الاستهلاكية المعقدة إلى علاقات تابعية تفتقر للمرونة الزمنية","إغفال المتغيرات السلوكية النوعية والارتكاز على فرضيات التجريد المثالي"],a:3,t:"methodology"},
+  {id:7,q:"متى شهد الاقتصاد الرياضي ظهوره الحقيقي والمنظم كعلم وفقاً لما ورد في مراحل تطوره؟",o:["في القرن الثامن عشر مع البدايات الأولى لاستخدام الرياضيات","في القرن العشرين مع تطور الحواسيب والتقنية","سنة 1838م عند استخدام المعادلات في تحليل العرض والطلب","في النصف الثاني من القرن التاسع عشر وتحديدا بعد عام 1870م"],a:3,t:"methodology"},
+  {id:8,q:"ما هو الشرط الأساسي الذي نعتمد عليه لإيجاد القيم التوازنية في السوق؟",o:["P = T","Qd = Qs","Qd = P − T","Qs = a − bp"],a:1,t:"equilibrium"},
+  {id:9,q:"تُعد طريقة الحذف مناسبة بشكل خاص عندما",o:["تكون الدوال غير خطية","يكون عدد المعادلات كبيرًا","تكون المعادلات خطية وبسيطة","نحتاج إلى رسم بياني فقط"],a:2,t:"equilibrium"},
+  {id:10,q:"مشتقة أي عدد ثابت هي:",o:["نفس العدد","صفر","واحد","عدد موجب"],a:1,t:"calculus"},
+  {id:11,q:"ماذا يعني أن الطلب على سلعة ما غير مرن؟",o:["تتأثر بتغير السعر","لا تتأثر بتغير السعر","تعتبر سلعة بديلة","تعتبر سلعة مكملة"],a:1,t:"taxes"},
+  {id:12,q:"على ماذا يركز المدير عند اتخاذ قرارات مبنية على المفاهيم الحدية؟",o:["إجمالي الأرباح","متوسط التكاليف الكلية","أثر إنتاج أو بيع وحدة إضافية","الميزانية السنوية كاملة"],a:2,t:"calculus"},
+  {id:13,q:"كيف يكون التوازن في الاقتصاد المكون من قطاعين؟",o:["الإنتاج = الإنفاق","الإنتاج = الادخار","الاستهلاك = الإنفاق","الادخار = الاستثمار"],a:0,t:"equilibrium"},
+  {id:14,q:"أوجد دالة الاستهلاك",o:["AD= C+I","C= a+by","C= -a+by","C= Y+I"],a:1,t:"equilibrium"},
+  {id:15,q:"ما هو التعريف الأساسي ل\"الدالة\" في سياق الاقتصاد الرياضي",o:["عملية حسابية تهدف فقط إلى حساب الأرباح النهائية للمشروع","ثبات القيم الاقتصادية وعدم تأثرها بالعوامل الخارجية","وجود علاقة بين شيئين بحيث يؤدي تغير أحدهما إلى تغير الآخر","زيادة المال بشكل مستمر دون الحاجة لوجود علاقة معينة"],a:2,t:"functions"},
+  {id:16,q:"أي من الخيارات التالية يصف السلوك الجوهري للدالة اللوغاريتمية",o:["الشيء يزداد، وكل زيادة تكون أكبر بكثير مما سبقها بشكل متسارع","بقاء الفائدة ثابتة مهما زادت الكمية المستخدمة من الشيء","الشيء يزداد، ولكن تأثير هذه الزيادة أو فائدتها تتناقص مع مرور الوقت","نقصان الكمية الأصلية مع زيادة الفائدة المحققة منها"],a:2,t:"functions"},
+  {id:17,q:"الدوال التكعيبية هي دالة رياضية من الدرجة؟",o:["الدرجة الأولى","الدرجة الثانية","الدرجة الثالثة","الدرجة الرابعة"],a:2,t:"functions"},
+  {id:18,q:"تتميز الدوال التكعيبية بأن شكلها يشبه حرف:",o:["U","V","S","O"],a:2,t:"functions"},
+  {id:19,q:"إذا كانت قيمة المعامل a في الدالة التكعيبية موجبة (a > 0)، فإن المنحنى:",o:["يبدأ من اليمين العلوي وينحدر لليسار من الجهتين أو من جهة واحدة","يبدأ من أسفل اليسار ويصعد للأعلى جهة اليمين","يكون متماثلاً حول المحور الصادي","يمثل دائماً دالة تناقصية"],a:1,t:"functions"},
+  {id:20,q:"كيف تظهر العلاقة التكاملية بين \"الإحصاء\" و \"الاقتصاد الرياضي\" في التحليل العلمي؟",o:["إثبات صلاحية النماذج التجريدية وتقدير قيم المتغيرات عبر الاستدلال القياسي","استبدال الصياغة الجبرية بالعلاقات الارتباطية والوصفية لتبسيط معالجة البيانات","دحض الفرضيات المنطقية للنماذج الرياضية بالاعتماد على التوزيعات الاحتمالية","حصر التحليل الاقتصادي في المؤشرات الكلية وتحييد دور النمذجة الرياضية"],a:0,t:"methodology"},
+  {id:21,q:"ما هو التعريف الأدق لمفهوم \"التوازن الجزئي\" في التحليل الاقتصادي؟",o:["دراسة التفاعلات التبادلية بين كافة الأسواق والقطاعات الاقتصادية المتداخلة","تحديد مستويات التشغيل الكامل للإنتاج عبر موازنة كافة المتغيرات الكلية","تحليل وضع التوازن في سوق منفردة بافتراض ثبات العوامل الخارجية","قياس مرونة الاستجابة السعرية للسلع دون مراعاة شروط الاستقرار السعري"],a:2,t:"equilibrium"},
+  {id:22,q:"ما هو القصور المنهجي الجوهري عند توظيف النماذج الخطية لتمثيل الظواهر الاقتصادية؟",o:["ارتكازها على فرضية التوزيع الطبيعي المتماثل في تقدير المعلمات","عجزها عن رصد تناقص الغلة والآثار غير التناسبية للمتغيرات","افتقارها للقدرة على صياغة التوازن العام في الأسواق التنافسية","ميلها لتحييد التفاعلات الديناميكية عبر تقليص عدد المتغيرات التفسيرية"],a:1,t:"functions"},
+  {id:23,q:"في الدالة متعددة المتغيرات Y = f(X₁, X₂, X₃)، ما هو المتغير التابع؟",o:["f(X)","Y","X₃","X₁ و X₂"],a:1,t:"functions"},
+  {id:24,q:"ما هي القيمة التحليلية المضافة لاستخدام الدوال الاقتصادية متعددة المتغيرات في النمذجة الرياضية؟",o:["تحييد أثر العوامل الخارجية لضمان استقرار الحلول الرياضية المقترحة","تبسيط الهيكل الجبري للنماذج عبر دمج العناصر الكمية والنوعية","معالجة مشكلة الارتباط الذاتي بين الأخطاء في السلاسل الزمنية الطويلة","رصد التفاعلات التبادلية بين المدخلات وقياس أثرها التراكمي المتزامن"],a:3,t:"functions"},
+  {id:25,q:"كيف تساهم الدوال متعددة المتغيرات في صياغة استراتيجيات الاستثمار والتوسع الرأسمالي للشركات؟",o:["محاكاة سيناريوهات المخاطر الصفرية وتحديد مسارات الربحية المطلقة للمنشأة","قياس مرونة الإحلال والمساهمات الحدية المشتركة لمجموعة مدخلات الإنتاج","تقليص الفجوة التمويلية عبر توحيد القوة الشرائية لكافة قطاعات المؤسسة","استنباط التوازنات السعرية المثلى بافتراض خطية التكاليف واتساق القيمة السوقية"],a:1,t:"functions"},
+  {id:26,q:"ما هو الإجراء المنهجي الرئيس المتبع عند تطبيق \"طريقة الحذف\" في حل نماذج التوازن؟",o:["التمثيل البياني للإحداثيات السعرية والكمية لتحديد نقطة التقاطع المشترك","استخدام الاستبدال الجبري لمساواة المتغيرات التابعة واستخلاص القيم التوازنية","التعويض المباشر للمعاملات السعرية ضمن دوال الاستجابة لتقدير الفجوات السعرية","تحليل الحساسية النسبية للمتغيرات التفسيرية لقياس استدامة التوازن السلوكي"],a:1,t:"equilibrium"},
+  {id:27,q:"ما هي الخطوة الجبرية اللاحقة مباشرة لمساواة دالتي العرض والطلب في نموذج التوازن؟",o:["استخلاص الكمية التوازنية النهائية بمعزل عن تحديد المستوى السعري","دمج المعاملات الهيكلية لجانب الطلب بهدف قياس فجوة العجز","عزل المتغير السعري من خلال فرز الحدود الجبرية والقيم المطلقة","استخدام تقنيات الاشتقاق الضمني لتبسيط العلاقات التابعية بين الطرفين"],a:2,t:"equilibrium"},
+  {id:28,q:"ما هو الإجراء الرياضي المتبع فور استخلاص السعر التوازني عبر طريقة الحذف؟",o:["إجراء التعويض العكسي للقيمة السعرية ضمن الدوال الهيكلية لاستخراج الكمية","تكرار عملية الحذف الجبري للمتغير المستقل لتبسيط النموذج الحسابي القائم","إعادة صياغة شروط التوازن بمساواة الطرفين التابعين وتصفير المعادلة الصفرية","اشتقاق منحنيات الاستجابة السعرية لتقدير معدلات الاستهلاك والإنتاج الكلية والجزئية"],a:0,t:"equilibrium"},
+  {id:29,q:"ما هو المفهوم الرياضي لعملية التكامل؟",o:["تحديد معدلات التغير اللحظي وميول خطوط المماس","تقدير القيم العظمى والصغرى عبر تصفير المشتقات","تحليل المرونة السعرية وتغيرات الكميات المطلوبة","إيجاد الدالة المقابلة وقياس المساحات تحت المنحنيات"],a:3,t:"calculus"},
+  {id:30,q:"ما هي المعلومة الأساسية التي يوفرها التكامل في التحليل الاقتصادي؟",o:["الانحرافات المعيارية في توزيعات الدخل القومي السنوية","القيم التراكمية الكلية المشتقة من المعدلات الحدية","الفوارق النسبية بين مستويات الإنتاج الفعلي والمتوقع","النقاط السعرية التي تحقق التوازن التنافسي في السوق"],a:1,t:"calculus"},
+  {id:31,q:"إذا قمنا بحساب مرونة الطلب فإن الناتج دائمًا سيكون بإشارة السالب، فماذا تعني هذه الإشارة؟",o:["تعكس العلاقة العكسية بين السعر والكمية","تعكس العلاقة الطردية بين السعر والكمية","تعكس العلاقة العكسية بين السعر والسعر","تعكس العلاقة الطردية بين الكمية والكمية"],a:0,t:"taxes"},
+  {id:32,q:"كيف يُعرّف التوازن الجزئي ضمن أطر التحليل الرياضي في علم الاقتصاد؟",o:["موازنة التفاعلات التبادلية بين كافة القطاعات السوقية داخل نظام مغلق","تسوية توازنية لسوق منفردة مع تثبيت المتغيرات الخارجية عند مستويات محددة","تحقيق التعادل النقدي ضمن أطر السيولة لضبط تقلبات أسعار الفائدة","المحاذاة المتماثلة بين الإنتاج الكلي والطلب الإجمالي عند مستوى التشغيل الكامل"],a:1,t:"equilibrium"},
+  {id:33,q:"يُنسب تطوير تحليل التوازن الجزئي في الفكر الاقتصادي الكلاسيكي إلى:",o:["جون ماينارد كينز","ديفيد ريكاردو","ألفريد مارشال","بول سامويلسون"],a:2,t:"equilibrium"},
+  {id:34,q:"من الافتراضات الأساسية لتحليل التوازن الجزئي:",o:["تغير جميع العوامل الاقتصادية في آن واحد","ثبات العوامل الخارجية المؤثرة في السوق","وجود احتكار كامل","عدم عقلانية المتعاملين"],a:1,t:"equilibrium"},
+  {id:35,q:"ما هي الميزة التحليلية لتوظيف فرضية \"المنافسة الكاملة\" في نماذج التوازن الجزئي؟",o:["تعظيم القدرة التفسيرية عبر توسيع نطاق المتغيرات الهيكلية للنموذج المقترح","تحييد الأنماط السلوكية للمنتجين لضمان استقرار الدوال العرضية في التوازن","تثبيت المرونات التراكمية لتحقيق التوافق الكمي بين قوى الطلب والإنتاج","عزل القوى السوقية ودراسة استجابة السعر بعيداً عن التشوهات الاحتكارية"],a:3,t:"equilibrium"},
+  {id:36,q:"في طريقة الحذف، نبدأ بمساواة طرفي:",o:["السعر والعرض","الطلب والعرض","الربح والتكلفة","السعر والصفر"],a:1,t:"equilibrium"},
+  {id:37,q:"ما هو الهدف التحليلي الرئيسي لتوظيف \"طريقة الحذف الجبري\" في النماذج السوقية؟",o:["تحديد مستويات التكاليف التشغيلية المرتبطة بحجم الإنتاج","استنباط الإحداثيات السعرية والكمية التي تمثل التوازن","نمذجة السلوك الاستهلاكي بناءً على قيود الميزانية","قياس أثر المتغيرات العشوائية على استدامة النمو"],a:1,t:"equilibrium"},
+  {id:38,q:"متى تتحقق حالة \"التوازن الجزئي\" ضمن إطار النمذجة الرياضية للسوق؟",o:["عندما تنعدم الضغوط التضخمية وتستقر القيمة التبادلية عند الحدود الدنيا","عندما تتجاوز معدلات الاستهلاك السنوية قدرة الطاقة الإنتاجية المتاحة فعلياً","عندما تتقاطع قوى العرض والطلب وتتطابق الإحداثيات الكمية لكليهما","عندما تبلغ المؤسسة مرحلة التشبع الإنتاجي وتتعادل الإيرادات مع التكاليف"],a:2,t:"equilibrium"},
+  {id:39,q:"أيٌّ من الخيارات التالية يُعدّ ميزةً لاستخدام طريقة كرايمر والمصفوفات في تحليل التوازن الجزئي مقارنةً بالطريقة الجبرية التقليدية؟",o:["تُلغي الحاجة إلى معادلتَي العرض والطلب كلياً","تُعطي نتائج تقريبية أسرع دون الحاجة إلى دقة رياضية","تُمكّن من تحليل أنظمة معقدة تضم أسواقاً متعددة","تُلغي تأثير الثوابت الاقتصادية a, b, c, d على نتيجة التوازن"],a:2,t:"equilibrium"},
+  {id:40,q:"لماذا يُعدّ التوازن الجزئي \"جزئياً\" وليس \"عاماً\"؟",o:["لأنه يستخدم عدداً محدوداً من المعادلات الرياضية","لأنه يحلل سوقاً واحداً مع افتراض ثبات العوامل الأخرى","لأن طريقة كرايمر لا تستطيع حل أكثر من معادلتين","لأن نتائجه تكون دائماً تقريبية وليست دقيقة"],a:1,t:"equilibrium"},
+  {id:41,q:"في المثال العملي (Qd = 10 - P و Qs = -2 + 2P)، إذا ارتفع الثابت في دالة الطلب من 10 إلى 16، فما الأثر المتوقع على سعر التوازن؟",o:["سينخفض سعر التوازن لأن الطلب زاد","سيبقى سعر التوازن كما هو لأن العرض لم يتغير","سيرتفع سعر التوازن لأن زيادة الطلب ترفع السعر","لا يمكن تحديد الأثر بدون إعادة حل المصفوفة كاملاً"],a:2,t:"equilibrium"},
+  {id:42,q:"متى يتحقق \"التوازن الجزئي\" في نموذج تشغيل تطبيقات التوصيل الذكية؟",o:["تزامن انخفاض تكاليف التشغيل مع بلوغ الحد الأقصى لجاهزية الأسطول","تجاوز كثافة الطلبات اللحظية لمعدلات توافر مقدمي الخدمة المتاحين فعلياً","توافق خوارزمية التسعير بين تدفق الطلبات وكثافة السائقين النشطين لحظياً","تعادل الإيرادات الحدية مع التكاليف المتغيرة لضمان استقرار العائد السعري"],a:2,t:"equilibrium"},
+  {id:43,q:"في المثال: P^2 + P - 30 = 0 لماذا نرفض الحل P = -6 اقتصادياً؟",o:["لأنه حل غير دقيق من الناحية الرياضية البحتة","لأن السعر لا يمكن أن يكون سالباً في الواقع الاقتصادي للسلع العادية","لأن القانون العام للمعادلات التربيعية لا يسمح أصلاً بقيم سالبة","لأن الكمية المطلوبة عند السعر السالب تصبح دائماً صفراً"],a:1,t:"functions"},
+  {id:44,q:"متى نلجأ إلى استخدام القانون العام للمعادلة التربيعية بدلاً من التحليل إلى العوامل؟",o:["عندما تكون الأرقام صحيحة وبسيطة وسهلة التحليل ذهنياً","عندما تكون المعادلة من الدرجة الأولى (خطية)","عندما تحتوي المعادلة على أرقام عشرية أو معاملات معقدة يصعب تحليلها","فقط عندما تكون قيمة المميز في المعادلة مساوية للصفر"],a:2,t:"functions"},
+  {id:45,q:"في حالة \"التسعير الديناميكي\" في تطبيقات التوصيل وقت الذروة، لماذا يتحول النموذج إلى غير خطي؟",o:["لأن السعر يصبح ثابتاً بقرار من الشركة المشغلة","لأن استجابة الطلب والعرض تصبح متسارعة (غير تدريجية) مع تغير السعر","لأن الكمية المطلوبة تتساوى دائماً مع الكمية المعروضة في كل اللحظات","لأن المستهلكين يتوقفون عن استخدام التطبيق تماماً عند ارتفاع السعر"],a:1,t:"functions"},
+  {id:46,q:"عند استخدام الدالة التربيعية في الفيزياء لتمثيل حركة المقذوفات، ماذا يمثل شكل المسار؟",o:["شكل حلزوني","دائرة كاملة","قطع مكافئ","خط مستقيم"],a:2,t:"functions"},
+  {id:47,q:"في النماذج الخطية، تؤدي ضريبة الإنتاج \"القيمية\" (t) إلى:",o:["انتقال منحنى العرض بشكل موازٍ لجهة اليسار","انتقال منحنى العرض بشكل موازٍ لجهة اليمين","دوران منحنى العرض للأعلى من نقطة التقاطع مع المحور الرأسي","دوران منحنى الطلب للأسفل من نقطة التقاطع مع المحور الرأسي"],a:2,t:"taxes"},
+  {id:48,q:"عند فرض ضريبة قيمية في سوق يتسم بطلب \"عديم المرونة تماماً\"",o:["يتحمل المنتج كامل العبء الضريبي","ينخفض السعر على المستهلك","يتحمل المستهلك كامل العبء الضريبي","تخرج الضريبة من حسابات التوازن"],a:2,t:"taxes"},
+  {id:49,q:"في الاقتصاد الرياضي، نستخدم \"التكامل\" بشكل أساسي من أجل:",o:["طرح الكميات من بعضها","حساب إجمالي التراكم","إيجاد ميل المنحنى فقط","جميع ما سبق"],a:1,t:"calculus"},
+  {id:50,q:"لحساب \"القيمة الحالية\" لتدفق نقدي مستقبلي باستخدام التكامل، نحن نقوم بـ:",o:["زيادة قيمة المال بمرور الزمن","خصم القيمة المستقبلية لتساوي قيمتها اليوم","تجاهل سعر الفائدة","لا شيء مما سبق"],a:1,t:"calculus"},
+  {id:51,q:"في سياق العلوم الاقتصادية، ماذا يمثل \"المتغير التابع\" Y عادةً عند استخدام الدوال؟",o:["القيمة التي نسعى لتقديرها أو توقعها مثل الربح","القيمة التي تتحكم بها مباشرة مثل السعر","ثابت رياضي لا يتغير بتغير الظروف","العنصر الذي يمثل \"المدخلات\" في الآلة الرياضية"],a:0,t:"functions"},
+  {id:52,q:"متى يتحقق التوازن الكلي في نموذج الاقتصاد الكلي المبسط المكون من قطاعين (عائلات وأعمال)؟",o:["عندما يتساوى الإنفاق الحكومي مع حصيلة الضرائب","عندما يكون الاستثمار المستقل لقطاع الأعمال مساوياً للصفر","عندما يتساوى الدخل القومي مع إجمالي الإنفاق","عندما يتساوى الاستهلاك الكلي مع إجمالي المدخرات في المجتمع"],a:2,t:"equilibrium"},
+  {id:53,q:"في دالة الاستهلاك الكلية C = a + bY، ماذا يمثل الرمز a اقتصادياً؟",o:["نسبة ما يصرفه المجتمع من أي زيادة جديدة في الدخل","مستوى الاستهلاك الذي يتأثر طردياً بتغير الدخل القومي","الحد الأدنى من الاستهلاك المستقل اللازم للبقاء حتى لو كان الدخل صفراً","إجمالي الاستثمارات الثابتة المخطط لها من قبل قطاع الأعمال"],a:2,t:"equilibrium"},
+  {id:54,q:"في نموذج الاقتصاد الكلي المبسط المكون من قطاعين (اقتصاد مغلق بدون حكومة)، الإنفاق الكلي في المجتمع يتكون أساساً من:",o:["الاستهلاك الكلي والإنفاق الحكومي","الاستثمار الكلي والصادرات","الاستهلاك الكلي والاستثمار الكلي","إجمالي المدخرات وإجمالي الضرائب"],a:2,t:"equilibrium"},
+  {id:55,q:"كيف يكون التوازن في الاقتصاد المكون من قطاعين؟",o:["الإنتاج = الإنفاق","الإنتاج = الادخار","الاستهلاك = الإنفاق","الادخار = الاستثمار"],a:0,t:"equilibrium"},
+  {id:56,q:"أي أداة رياضية تُستخدم لحساب القيمة الحالية للتدفقات النقدية إذا كانت الأموال تأتي بشكل مستمر وليس على دفعات منفصلة؟",o:["الجمع العادي","التكامل","التفاضل","حساب المتوسطات"],a:1,t:"calculus"},
+  {id:57,q:"عند فرض ضريبة قيمية (t)، ماذا يحدث لميل دالة العرض الخطية؟",o:["يبقى ثابتاً","يقل (يصبح المنحنى أكثر انحداراً)","يزيد (يصبح المنحنى أكثر تسطحاً)","ينتقل المنحنى بشكل موازٍ"],a:1,t:"taxes"},
+  {id:58,q:"الصيغة الصحيحة لدالة العرض بعد فرض ضريبة قيمية هي؟",o:["Qs = −c + d(P−t)","Qs = −c + d(1−t)P","Qs = −c + (d+t)P","Qs = −c + dP − t"],a:1,t:"taxes"},
+  {id:59,q:"كيف يتمايز الأثر البياني للضريبة \"القيمية\" عن الضريبة \"النوعية\" على منحنى العرض؟",o:["إحداث انحراف زاوي في ميل المنحنى مقابل إزاحة موازية للثوابت","تسبب انتقالاً كلياً لموقع المنحنى مقابل تدوير المحور السعري التابع","تعديل مرونة الاستجابة السعرية للمنتج مقابل تغيير نقاط التقاطع الصفرية","صياغة علاقة تربيعية متزايدة للمخرجات مقابل الحفاظ على خطية الدوال"],a:0,t:"taxes"},
+  {id:60,q:"في حالة التوازن الجديد بعد الضريبة، الفرق بين السعر الذي يدفعه المستهلك والسعر الذي يستلمه المنتج يمثل؟",o:["فائض المستهلك","تكلفة الإنتاج","الإسفين الضريبي","فائض المنتج"],a:2,t:"taxes"},
+  {id:61,q:"عندما تبدأ كرة ثلج صغيرة بالتدحرج وتكبر بسرعة متزايدة مع الوقت، فإننا نصف هذا السلوك باستخدام",o:["الدالة اللوغاريتمية","الدالة الأسية","الدالة الثابتة","الدالة العكسية"],a:1,t:"functions"},
+  {id:62,q:"ما الذي يحدث للمال عند استثماره أو ادخاره لفترات طويلة وفقاً لمثال الدالة الأسية",o:["تكون الفائدة منه كبيرة جداً في البداية ثم تتلاشى تدريجيا","يظل المبلغ ثابتا مهما طال الزمن لأن الاستثمار دالة مستقرة","ينقص المال تدريجيا بسبب تأثير الزمن عليه","يزداد ببطء في البداية ثم يزداد بسرعة أكبر مع مرور الوقت"],a:3,t:"functions"},
+  {id:63,q:"لماذا يكون تأثير زيادة مبلغ مالي بسيط على الشخص الفقير أكبر من تأثيره على الغني وفقاً لأسس الاقتصاد الرياضي",o:["لأن ثروة الغني تزداد ببطء شديد مقارنة بالفقير","لأن الفقير يستخدم الدالة الأسية في صرف أمواله بينما الغني لا يفعل","لأن الزيادة المالية للغني تعتبر دالة ثابتة لا تتغير قيمتها أبداً","لأن المال يتبع سلوك الدالة اللوغاريتمية حيث يقل تأثير الزيادة مع ارتفاع مستوى الغنى"],a:3,t:"functions"},
+  {id:64,q:"كيف يتحدد السلوك الطرفي للمنحنى في الدالة التكعيبية عندما يكون المعامل الرئيسي a > 0؟",o:["يتجه من أسفل اليسار إلى أعلى اليمين","يتجه من أعلى اليسار إلى أسفل اليمين","يشكل مساراً متناظراً حول نقطة الأصل مع وجود قمة وقاع","يتبع نمطاً محدباً يتقارب نحو المحور السيني عند القيم العظمى"],a:0,t:"functions"},
+  {id:65,q:"في الدالة التكعيبية، هل يجوز أن يكون a = 0؟",o:["نعم، دائمًا","لا، لأنه تصبح دالة غير تكعيبية","نعم، لكنها تبقى تكعيبية","أحيانًا فقط"],a:1,t:"functions"},
+  {id:66,q:"أي من الحالات التالية تصف علاقة \"طردية\" بين المتغير المستقل والمتغير التابع؟",o:["كلما ارتفع سعر التذكرة، انخفض عدد المسافرين","كلما زاد عدد الساعات التي تقضيها السيارة في الموقف، ظل السعر ثابتاً","كلما زاد عدد الأشخاص المشتركين في الرحلة، زادت التكلفة الإجمالية للرحلة","كلما استهلكت من باقة الإنترنت، نقص الرصيد المتبقي لديك"],a:2,t:"functions"},
+  {id:67,q:"إذا قمنا بتمثيل \"قانون الطلب\" (العلاقة بين السعر والكمية المطلوبة) بيانيًا، فكيف يكون شكل الخط؟",o:["خط يصعد من اليسار إلى اليمين (متزايد)","خط أفقي تماماً موازٍ لمحور السينات","خط ينحدر من اليسار إلى اليمين (متناقص)","خط رأسي تماماً موازٍ لمحور الصادات"],a:2,t:"functions"},
+  {id:68,q:"عندما نقول أن \"معدل التغير لا يتغير\" على طول الخط المستقيم، فنحن نقصد بذلك أن:",o:["العلاقة غير خطية","الميل (الانحدار) ثابت في جميع نقاط الخط","المتغير التابع لا يتأثر أبداً بالمتغير المستقل","الدالة دائماً ما تكون دالة ثابتة وميلها صفر"],a:1,t:"functions"},
+  {id:69,q:"عند حساب معكوس مصفوفة من نوع 2×2، ما هي العناصر التي نقوم بتغيير إشاراتها؟",o:["عناصر القطر الرئيسي","عناصر القطر الفرعي","عناصر الصف الأول فقط","لا شيء مما سبق"],a:1,t:"equilibrium"},
+  {id:70,q:"ما هو التوصيف الرياضي للمصفوفة عند توظيفها في تحليل التوازن الجزئي؟",o:["متجه رياضي لتحليل نقاط الانعطاف في دوال الإنتاج غير الخطية","إطار إحصائي لتقدير عشوائية التقلبات السعرية في المدى الطويل","مشغل جبري لتنظيم معاملات النموذج وتسهيل عملية الحل","تمثيل بياني لاستقرار التوازن في ظل ظروف السوق الديناميكية"],a:2,t:"equilibrium"},
+  {id:71,q:"ما هو المفهوم الأساسي الذي يدرسه \"التفاضل\" في التحليل الاقتصادي؟",o:["إجمالي كمية الإنتاج خلال فترة زمنية معينة","معدل التغير اللحظي في متغير اقتصادي نتيجة تغير متغير آخر","حساب المساحات المحصورة تحت منحنيات العرض والطلب","تحديد القيم الثابتة التي لا تتأثر بتغير مستوى الإنتاج"],a:1,t:"calculus"},
+  {id:72,q:"ماذا يمثل \"التكامل المحدد\" لدالة التكلفة الحدية عند الانتقال من مستوى إنتاج إلى آخر؟",o:["التكلفة الثابتة","متوسط التكلفة","التغير في التكلفة الكلية","أقصى ربح ممكن"],a:2,t:"calculus"},
+  {id:73,q:"تُستخدم المشتقة الأولى في الاقتصاد (مساواة الإيراد الحدي بالتكلفة الحدية) بهدف:",o:["تقليل عدد العمال","تعظيم الأرباح","حساب المساحة تحت المنحنى","زيادة الضرائب"],a:1,t:"calculus"},
+  {id:74,q:"يُستخدم \"التكامل\" في الدراسات الاقتصادية والمالية بشكل أساسي من أجل:",o:["قياس التراكمات الإجمالية مثل حساب إجمالي الثروة","حساب ميل المنحنى عند نقطة معينة فقط","تحديد السعر اللحظي للسلعة في لحظة زمنية محددة","إيجاد القيم العظمى والصغرى للدوال الاقتصادية"],a:0,t:"calculus"},
+  {id:75,q:"بناءً على التحليل الاقتصادي، ما هو التأثير المباشر لفرض ضريبة الإنتاج النوعية على منحنيات العرض والطلب؟",o:["دالة العرض لا تتغير، بينما ينتقل خط الطلب بالكامل للأسفل","تنتقل كل من دالة الطلب ودالة العرض للأعلى","دالة الطلب لا تتغير، بينما ينتقل خط العرض بالكامل للأعلى","تنتقل دالة الطلب للأعلى ودالة العرض للأسفل"],a:2,t:"taxes"},
+  {id:76,q:"لماذا يفضل الاقتصاديون استخدام الدالة التكعيبية لتمثيل دالة التكاليف بدلاً من الدالة الخطية؟",o:["لأن الدالة التكعيبية أسهل في الحل الرياضي","لأن التكاليف دائماً تتضاعف ثلاث مرات أثناء الإنتاج","لقدرتها على تمثيل مراحل الإنتاج الثلاث","لأنها لا تتقاطع مع المحور السيني"],a:2,t:"functions"},
+  {id:77,q:"كيف تُفسر المرحلة الثالثة للدالة التكعيبية لـ \"المنفعة الاجتماعية\" في منظور الاقتصاد الإسلامي؟",o:["بلوغ ذروة الرفاهية المطلقة بتجاوز قيود الندرة المادية النسبية","تناقص المنفعة الكلية نتيجة الإسراف وتجاوز حدود الكفاية الرشيدة","استقرار التوازنات السوقية جراء غياب الفوائد والمضاربات غير المنتجة","تعظيم الكفاءة التخصيصية للموارد بما يحقق غايات التكافل الاجتماعي"],a:1,t:"functions"},
+  {id:78,q:"تمتاز الدالة التكعيبية بأن مداها (Range) ومجالها (Domain) في مجموعة الأعداد الحقيقية هو:",o:["من صفر إلى مالانهاية","جميع الأعداد الحقيقية","مقتصر على القيم الموجبة فقط","يعتمد على قيمة الحد الثابت d"],a:1,t:"functions"},
+  {id:79,q:"في نموذج الاقتصاد المكون من ثلاث قطاعات، ما العنصر الذي يميز هذا النموذج عن نموذج القطاعين؟",o:["وجود الاستثمار","وجود الحكومة","وجود الاستهلاك","وجود الانتاج"],a:1,t:"equilibrium"},
+  {id:80,q:"ما تأثير زيادة الصادرات في نموذج الأربع قطاعات؟",o:["تقليل الطلب الكلي","زيادة الطلب الكلي","تقليل الاستثمار","لا تأثير لها"],a:1,t:"equilibrium"},
+  {id:81,q:"تُعتبر عملية \"التكامل\" رياضياً هي",o:["العملية العكسية للتفاضل لإيجاد الدالة الأصلية","تقسيم الدالة إلى أجزاء متناهية في الصغر","إيجاد القيم العظمى والصغرى للدالة","حساب معدل الدوران لرأس المال"],a:0,t:"calculus"},
+  {id:82,q:"للحصول على \"الإجماليات\" (Totals) مثل الإيراد الكلي من خلال دالة الإيراد الحدي، نستخدم عملية",o:["التفاضل رياضياً","التكامل رياضياً","الحل الرياضي بطريقة التعويض","المصفوفات بطريقة كرايمر"],a:1,t:"calculus"},
+  {id:83,q:"يُستخدم \"التكامل المحدد\" اقتصادياً لحساب \"فائض المستهلك\"، وهو يمثل مساحة",o:["فوق منحنى الطلب وتحت السعر التوازني","تحت منحنى الطلب وفوق السعر التوازني","تحت منحنى العرض وفوق السعر التوازني","المحصورة بين منحنى التكلفة الكلية والتكلفة الحدية"],a:1,t:"calculus"},
+  {id:84,q:"إذا اعتبرنا أن عداد السرعة في السيارة يخبرنا عن معدل التغير في المسافة عند لحظة زمنية معينة، فما هي الأداة الرياضية التي يعبر عنها هذا العداد",o:["التكامل","التفاضل","ثابت التكامل","الميل الحدي"],a:1,t:"calculus"},
+  {id:85,q:"عند صياغة نموذج اقتصادي رياضي لتحليل صدمة عرض مفاجئة (كالكوارث)، أي من الافتراضات التالية يمثل العائق الأكبر أمام دقة التنبؤات؟",o:["صعوبة تحويل المتغيرات الكمية إلى معادلات خطية بسيطة","تجاهل تأثير الضرائب غير المباشرة على التوازن المالي للشركات","افتراض العقلانية للمستهلكين متجاهلاً تأثير القرارات غير المنطقية","الاعتماد على بيانات تاريخية غير قابلة للاشتقاق رياضياً"],a:2,t:"methodology"},
+  {id:86,q:"في سوق سلعة معينة، إذا كانت دالتا العرض والطلب غير خطيتين (درجة ثانية)، فإن الاعتماد على طريقة الحذف الجبري قد يؤدي إلى:",o:["الوصول إلى نقطة توازن وحيدة دائماً تعكس استقرار السوق","ظهور عدة جذور رياضية يتطلب بعضها استبعاداً لعدم توافقها مع المنطق","استحالة تحديد السعر التوازني رياضياً دون اللجوء حصرياً لقاعدة كرايمر","ثبات الكمية المعروضة بغض النظر عن التغيرات اللحظية في السعر"],a:1,t:"equilibrium"},
+  {id:87,q:"عند استخدام \"قاعدة كرايمر\" لحل نموذج توازن عام، إذا كانت قيمة محدد المصفوفة الرئيسية تساوي صفراً، فهذا يشير اقتصادياً إلى:",o:["أن الأسواق في حالة توازن تام والأسعار مستقرة عند الصفر","أن جميع الكميات التوازنية ستكون سالبة حتماً","وجود ارتباط خطي تام بين معادلات الأسواق","أن المرونة السعرية للطلب في الأسواق انعدمت تماماً"],a:2,t:"equilibrium"},
+  {id:88,q:"أي من السيناريوهات الاقتصادية التالية يُعد التطبيق الأنسب لنمذجة دالة \"لوغاريتمية\" بدلاً من دالة \"أسية\"؟",o:["نمو الدين القومي لبلد ما في ظل تراكم معدلات فائدة مركبة ثابتة","انتشار تبني تقنية جديدة في مراحلها الأولى المتسارعة","تناقص المنفعة الحدية عند استهلاك وحدات إضافية","انخفاض القيمة الشرائية للعملة المحلية نتيجة دوامة التضخم المفرط"],a:2,t:"functions"},
+  {id:89,q:"في التحليل المتقدم للتكاليف، يعكس الجزء المنعطف في منحنى \"التكلفة الكلية\" التكعيبي المرحلة التي:",o:["تبلغ فيها التكلفة الكلية أدنى مستوى لها قبل أن تبدأ بالصعود","تبدأ فيها التكلفة الحدية (MC) بالارتفاع بعد أن كانت تتناقص","يتساوى فيها الإيراد الحدي تماماً مع التكلفة الحدية لتحقيق أقصى ربح","تنعدم فيها التكاليف الثابتة ويصبح الإنتاج معتمداً على التكاليف المتغيرة"],a:1,t:"functions"},
+  {id:90,q:"إذا فرضت الحكومة ضريبة قيمية على سلعة بطلب عالي المرونة وعرض غير مرن نسبياً، فإن العبء الضريبي الأكبر سيقع رياضياً على:",o:["المستهلك، لأن الضريبة القيمية ترفع السعر بنسبة مئوية","المنتج، لعدم قدرته على تعديل الكمية المعروضة بسهولة","الحكومة، بسبب الانخفاض الحاد والمتوقع في الحصيلة الضريبية","سيُوزع العبء بالتساوي لأن خصائص الضريبة القيمية تلغي تأثير المرونة"],a:1,t:"taxes"},
+  {id:91,q:"في نموذج اقتصاد كلي مبسط، إذا كان الميل الحدي للادخار (MPS) يقترب من الصفر، فإن أي زيادة طفيفة في الاستثمار ستؤدي إلى:",o:["انخفاض حاد في الاستهلاك الكلي لتعويض نقص المدخرات","ثبات الدخل التوازني لأن الادخار شرط أساسي لتمويل الاستثمار","انتقال دالة الاستهلاك بالكامل إلى الأسفل بمقدار الزيادة في الاستثمار","تأثير مضاعف هائل يؤدي لزيادة ضخمة في الدخل القومي التوازني"],a:3,t:"equilibrium"},
+  {id:92,q:"عند حساب \"فائض المستهلك\" بالتكامل، إذا انتقل منحنى العرض إلى اليمين مع ثبات منحنى الطلب (ميل سالب)، فإن مساحة فائض المستهلك:",o:["ستنخفض بالضرورة بسبب انخفاض السعر التوازني","ستبقى ثابتة لأن منحنى الطلب الأساسي لم يتغير مكانه","ستزداد؛ لانخفاض السعر التوازني وزيادة الكمية في السوق","لا يمكن تحديدها دون معرفة مرونة العرض وتكلفة الإنتاج"],a:2,t:"calculus"},
+  {id:93,q:"لتعظيم \"إجمالي الإيرادات\" لمنشأة محتكرة، ما هو الشرط الرياضي الكافي لتحديد حجم المخرجات؟",o:["تساوي التكلفة الحدية مع الإيراد الحدي لضمان تعظيم صافي الأرباح الرأسمالية للمنشأة","تصفير المشتقة الأولى لدالة الإيراد الكلي مع تحقق شرط السالبية للمشتقة الثانية","تطابق مرونة الطلب السعرية مع قوى العرض لتحقيق الاستقرار السعري المنشود للسوق","تقاطع منحنيات الإيراد المتوسط مع التكاليف الكلية عند نقطة التشبع السوقي اللحظية"],a:1,t:"calculus"},
+  {id:94,q:"عند استخدام \"التكامل\" لحساب القيمة الحالية لتدفق نقدي مستمر، فإن زيادة معدل الخصم في المعادلة الأسية سيؤدي إلى:",o:["زيادة القيمة الحالية التراكمية للمشروع الاستثماري","تحول منحنى التدفق النقدي من دالة أسية إلى دالة خطية","انخفاض القيمة الحالية للتدفقات النقدية المستقبلية بشكل متسارع","تأجيل نقطة التعادل الزمنية للمشروع دون التأثير على قيمته المالية"],a:2,t:"calculus"},
+  {id:95,q:"رياضياً، يمكن التعبير عن \"المرونة السعرية للطلب\" عند نقطة معينة باستخدام التفاضل على أنها:",o:["المشتقة الأولى لدالة الطلب مضروبة في السعر مضروباً في الكمية","التغير المطلق في الكمية مقسوماً على التغير المطلق في السعر","التكامل المحدود لدالة الطلب مقسوماً على السعر مضروباً في الكمية","المشتقة الأولى للكمية بالنسبة للسعر مضروبة في (السعر مقسوماً على الكمية)"],a:3,t:"taxes"},
+  {id:96,q:"للتحقق رياضياً من أن النقطة الحرجة تمثل \"نهاية صغرى\" لدالة التكلفة المتوسطة، يجب التأكد من أن:",o:["المشتقة الثانية للدالة عند تلك النقطة سالبة","المشتقة الأولى تتساوى تماماً مع المشتقة الثانية","المشتقة الثانية للدالة عند تلك النقطة موجبة","قيمة الدالة الأصلية عند تلك النقطة تساوي صفراً"],a:2,t:"calculus"},
+  {id:97,q:"في التسعير الديناميكي للخدمات، إذا تم نمذجة العلاقة بدالة أسية سالبة (Q = a * e^(-bP))، فهذا يعني رياضياً أن:",o:["الطلب سينخفض بمقدار ثابت ومحدد مع كل وحدة إضافية في السعر","الإيرادات ستستمر في الزيادة إلى المالانهاية طالما استمر رفع السعر","المستهلك سيتقبل السعر الجديد دائماً في أوقات الذروة لتجنب الانتظار","الطلب لن يصل إلى الصفر المطلق مهما ارتفع السعر، بل سيقترب منه فقط"],a:3,t:"functions"},
+  {id:98,q:"إذا كانت دالة إجمالي الربح لشركة تأخذ شكل دالة تربيعية مقعرة للأسفل، فإن قمة المنحنى تمثل:",o:["نقطة إغلاق الشركة بسبب تجاوز الخسائر للحدود المسموحة","مستوى الإنتاج الذي يعظم الأرباح وتتساوى عنده التكلفة الحدية مع الإيراد الحدي","الحد الأقصى للتكاليف المتغيرة التي يمكن للمصنع تحملها","نقطة التعادل حيث تتساوى الإيرادات الكلية مع التكاليف"],a:1,t:"functions"},
+  {id:99,q:"المأخذ التحليلي الرئيسي على استخدام \"التوازن الجزئي\" عند دراسة سوق حيوي كسوق النفط هو أنه:",o:["يتجاهل التغيرات اللحظية واليومية في الأسعار","يعتمد على النماذج الخطية التي لا يمكنها استيعاب صدمات العرض","يفترض ثبات أسعار السلع البديلة والمكملة وتجاهل تأثيره على تكاليف الأسواق الأخرى","يتطلب استخدام مصفوفات معقدة لحل معادلتين بسيطتين فقط"],a:2,t:"equilibrium"},
+  {id:100,q:"عند فرض \"ضريبة إنتاج نوعية\" على منتج محتكر، فإن دالة التكلفة الحدية (MC):",o:["ستشهد دوراناً للأعلى انطلاقاً من نقطة الأصل متأثرة بحجم الإنتاج","ستنتقل بشكل موازٍ إلى الأعلى بمقدار الضريبة، مما يقلل الكمية التوازنية","ستبقى في موقعها الأصلي، ولكن دالة الإيراد الحدي هي التي ستنتقل للأسفل","ستتحول من دالة خطية إلى دالة تربيعية لتعكس العبء المتزايد"],a:1,t:"taxes"}
+];
+
+// ====== TOPICS ======
+const TOPICS = {
+  calculus:"التفاضل والتكامل",
+  functions:"الدوال الرياضية",
+  equilibrium:"التوازن الجزئي والكلي",
+  taxes:"الضرائب والمرونة",
+  methodology:"المنهجية والنظريات"
+};
+const TOPIC_ICONS = {calculus:"∫",functions:"ƒ",equilibrium:"⚖",taxes:"₿",methodology:"◎"};
+
+// ====== HINTS DATA (من ملف مفاتيح الحل الأصلي) ======
+const HINTS = {
+  calculus:{title:"مفاتيح التفاضل والتكامل",items:[
+    "التفاضل / المشتقة: ابحث دائماً عن كلمات مثل (معدل التغير اللحظي، عداد السرعة في السيارة)",
+    "تعظيم الربح (نهاية عظمى): يتحقق عندما نساوي المشتقة بالصفر (الإيراد الحدي = التكلفة الحدية)",
+    'النهاية الصغرى (للتكلفة): المشتقة الثانية تكون دائمًا (موجبة)',
+    "التكامل: ابحث عن كلمات التجميع (التراكم، الإجماليات، المساحة تحت المنحنى، إيجاد الدالة الأصلية)",
+    "القيمة الحالية (بالتكامل): تعني (خصم القيمة المستقبلية لتساوي قيمتها اليوم). وإذا زاد معدل الخصم فإن القيمة الحالية (تنخفض بشكل متسارع)",
+    "فائض المستهلك: مساحته دائماً (تحت منحنى الطلب وفوق السعر التوازني)",
+    "القرار الحدي (للمدير): يركز دائماً على أثر إنتاج أو بيع (وحدة إضافية)"
+  ]},
+  functions:{title:"مفاتيح الدوال الرياضية وأشكالها",items:[
+    'الدالة (بشكل عام): هي علاقة يؤدي تغير أحدها لتغير الآخر. (المتغير التابع Y هو ما نسعى لتقديره)',
+    'الدالة الخطية (المستقيم): قاعدتها الذهبية هي أن (الميل/الانحدار ثابت ولا يتغير). ولكن عيبها أنها (تعجز عن رصد تناقص الغلة)',
+    'الدالة التكعيبية: تذكر رقم 3 وحرف S! (من الدرجة الثالثة، شكلها يشبه حرف S، تمثل مراحل الإنتاج الثلاث). ومجالها ومداها هو (جميع الأعداد الحقيقية). سر التكعيبية: الجزء المنعطف فيها يعني أن التكلفة الحدية (تبدأ بالارتفاع)',
+    'الدالة التربيعية: شكلها (قطع مكافئ). ونستخدم معها "القانون العام" إذا كانت الأرقام (عشرية أو معقدة). ونرفض دائمًا السعر (السالب)',
+    'الدالة الأسية: تذكر "كرة الثلج"! (تنمو ببطء ثم تزداد بسرعة متزايدة). تُستخدم في التسعير الديناميكي (أوقات الذروة للتطبيقات)',
+    'الدالة اللوغاريتمية: الشيء يزداد لكن (فائدته تتناقص). (مثل تأثير المال على الغني مقارنة بالفقير، أو تناقص المنفعة الحدية)'
+  ]},
+  equilibrium:{title:"مفاتيح التوازن الجزئي والكلي",items:[
+    'التوازن الجزئي: ارتبطه دائماً باسم (ألفريد مارشال) وبدراسة (سوق منفردة) مع افتراض (ثبات العوامل الأخرى). عيبه: أنه (يتجاهل تأثير أسعار السلع البديلة والمكملة)',
+    "شرط التوازن الأساسي: تقاطع العرض والطلب (Qd = Qs)",
+    'طريقة الحذف: تُستخدم للمعادلات (الخطية والبسيطة). فكرتها الأساسية هي (استبدال جبري لمساواة المتغيرات التابعة). أول خطوة فيها عزل السعر، ثم (التعويض العكسي) لاستخراج الكمية',
+    'طريقة كرايمر (المصفوفات): تُستخدم لتحليل (أنظمة معقدة لأسواق متعددة). والمصفوفة تُعرف بأنها (مشغل جبري). إذا كان المحدد يساوي صفراً، فهذا يعني وجود (ارتباط خطي تام). ولإيجاد المعكوس 2×2 نغير إشارات (القطر الفرعي)',
+    'قطاعان (اقتصاد مغلق): التوازن يتحقق عندما (الإنتاج = الإنفاق)',
+    'ثلاثة قطاعات: السر في كلمة (وجود الحكومة)',
+    'أربعة قطاعات: زيادة الصادرات تؤدي إلى (زيادة الطلب الكلي)',
+    'دالة الاستهلاك C = a + bY: الرمز a يمثل (الحد الأدنى للاستهلاك للبقاء حياً)'
+  ]},
+  taxes:{title:"مفاتيح الضرائب والمرونة",items:[
+    'الضريبة القيمية (نسبة مئوية): تسبب (دوراناً/انحرافاً زاوياً). وتجعل ميل العرض (يقل أو يصبح أكثر انحداراً)',
+    'الضريبة النوعية (مبلغ ثابت): تسبب (انتقالاً موازياً بالكامل) للمنحنى (لليسار أو للأعلى)',
+    'إذا كان الطلب عديم المرونة تماماً: يتحمل (المستهلك) كامل العبء الضريبي',
+    'طلب مرن وعرض غير مرن: يتحمل (المنتج) العبء الأكبر',
+    'الإسفين الضريبي: هو ببساطة (الفرق بين سعر المستهلك وسعر المنتج) بعد الضريبة',
+    'إشارة مرونة الطلب السالبة: تعكس (العلاقة العكسية) بين السعر والكمية',
+    'الطلب غير المرن: يعني أنه (لا يتأثر بتغير السعر)'
+  ]},
+  methodology:{title:"مفاتيح المنهجية والنظريات",items:[
+    'فرضية "ثبات العوامل الأخرى": تعني دراسة تأثير (متغير واحد فقط)',
+    'دالة بمتغير مقابل متغيرين: المتغير الواحد يفترض ثبات العوامل، المتغيرين يدرس (تحليل التأثير المتزامن لعدة متغيرات)',
+    'الاقتصاد الرياضي: يقوم بـ (بناء نماذج استدلالية وتجريدية)',
+    'الاقتصاد القياسي (الإحصاء): يقوم بـ (التحقق التجريبي وتقدير المعلمات)',
+    'نقطة ضعف الاقتصاد الرياضي: يفشل في الأزمات لبروز (الأنماط السلوكية غير الرشيدة)، ومأخذه الأساسي هو (إغفال المتغيرات السلوكية النوعية)',
+    'ظهور الاقتصاد الرياضي كعلم: في النصف الثاني من القرن التاسع عشر (بعد عام 1870م)'
+  ]}
+};
+
+// ====== STATE ======
+let state = {questions:[],current:0,answered:false,checked:false,correct:0,wrong:0,hintShown:false,mode:"",topic:"",history:[]};
+const L = "أ-ب-ج-د".split("-");
+
+function $(id){return document.getElementById(id)}
+
+// ====== NAV ======
+function showMainMenu(){
+  for(const m of["mainMenu","topicSelect","testMode","resultMode","browseMode","keysMode"])
+    $(m).classList.add("hidden");
+  $("mainMenu").classList.remove("hidden")
+}
+
+function showTopicSelect(){
+  const g=$("topicGrid");g.innerHTML="";
+  for(const[k,v]of Object.entries(TOPICS)){
+    const cnt=QUESTIONS.filter(q=>q.t===k).length;
+    g.innerHTML+=`<button class="topic-btn" onclick="startTopic('${k}')"><div>${TOPIC_ICONS[k]} ${v}</div><span class="tcount">${cnt} سؤال</span></button>`
+  }
+  $("mainMenu").classList.add("hidden");$("topicSelect").classList.remove("hidden")
+}
+
+// ====== START TEST ======
+function startTopic(t){
+  state.topic=t;const qs=QUESTIONS.filter(q=>q.t===t);
+  if(qs.length===0){alert("لا توجد أسئلة في هذا الموضوع");return}
+  initTest(qs,`اختبار ${TOPICS[t]}`)
+}
+
+function startRandom(n){
+  const shuffled=[...QUESTIONS].sort(()=>Math.random()-.5);
+  initTest(shuffled.slice(0,n),"١٠ أسئلة عشوائية")
+}
+
+function startAll(){initTest([...QUESTIONS],"اختبار كافة الأسئلة")}
+
+function initTest(qs,title){
+  state={questions:qs,current:0,answered:false,checked:false,correct:0,wrong:0,hintShown:false,mode:title,topic:"",history:[]};
+  for(const m of["mainMenu","topicSelect","resultMode","browseMode","keysMode"])$(m).classList.add("hidden");
+  $("testMode").classList.remove("hidden");
+  $("testTitle").textContent=title;
+  $("totalNum").textContent=qs.length;
+  renderQuestion()
+}
+
+function renderQuestion(){
+  const q=state.questions[state.current],area=$("questionArea");
+  $("currentNum").textContent=state.current+1;
+  $("correctCount").textContent=state.correct;
+  $("wrongCount").textContent=state.wrong;
+  $("progressFill").style.width=((state.current+1)/state.questions.length*100)+"%";
+  state.hintShown=false;state.checked=false;
+  let opts=q.o.map((o,i)=>{
+    let cls="option",mk="";
+    if(state.answered&&state.checked){
+      if(i===q.a)cls+=" correct",mk="✓";
+      else cls+=" wrong",mk="✗"
+    }
+    if(state.answered&&i===state.lastSelected)cls+=" selected";
+    return `<div class="${cls}" onclick="selectOption(${i})" data-i="${i}"><span class="letter">${L[i]}</span><span class="text">${o}</span><span class="mark">${mk}</span></div>`
+  }).join("");
+  const btnCheckText=state.answered?(state.checked?"تم التحقق":"تحقق"):"تحقق";
+  const btnCheckDisabled=state.answered&&state.checked?"disabled":"";
+  area.innerHTML=`<div class="fade-in"><div class="question-number">س${q.id}  |  ${TOPIC_ICONS[q.t]} ${TOPICS[q.t]}</div><div class="question-text">${q.q}</div><div class="options" id="options">${opts}</div><div class="hint-box" id="hintBox" style="display:none"></div><div class="actions"><button class="btn-check" id="btnCheck" onclick="checkAnswer()" ${btnCheckDisabled}>${btnCheckText}</button><button class="btn-hint" onclick="toggleHint()">💡 تلميح</button><button class="btn-nav" onclick="prevQ()" ${state.current===0?"disabled":""}>→ السابق</button><button class="btn-nav" onclick="nextQ()">التالي ←</button></div></div>`;
+}
+
+function selectOption(i){
+  if(state.answered)return;
+  const q=state.questions[state.current];
+  state.answered=true;state.checked=false;state.lastSelected=i;
+  const isCorrect=i===q.a;
+  if(isCorrect)state.correct++;
+  else state.wrong++;
+  state.history.push({q,selected:i,correct:q.a,isCorrect});
+  document.querySelectorAll(".option").forEach(el=>{
+    el.classList.remove("selected");
+    if(parseInt(el.dataset.i)===i)el.classList.add("selected")
+  });
+  $("btnCheck").disabled=false;$("btnCheck").textContent="تحقق";
+  $("correctCount").textContent=state.correct;
+  $("wrongCount").textContent=state.wrong
+}
+
+function checkAnswer(){
+  if(!state.answered)return;
+  if(state.checked)return;
+  const q=state.questions[state.current];
+  state.checked=true;
+  document.querySelectorAll(".option").forEach(el=>{
+    const idx=parseInt(el.dataset.i);
+    if(idx===q.a){el.classList.add("correct");el.querySelector(".mark").textContent="✓"}
+    else{el.classList.add("wrong");el.querySelector(".mark").textContent="✗"}
+  });
+  $("btnCheck").disabled=true;$("btnCheck").textContent="تم التحقق"
+}
+
+function nextQ(){
+  if(state.current<state.questions.length-1){state.current++;state.answered=false;state.checked=false;renderQuestion()}
+  else showResult()
+}
+
+function prevQ(){
+  if(state.current>0){state.current--;state.answered=false;state.checked=false;renderQuestion()}
+}
+
+function toggleHint(){
+  try{
+    const box=document.getElementById("hintBox");
+    if(!box){alert("خطأ: لم يتم العثور على مربع التلميح");return}
+    if(state.hintShown){
+      box.style.display="none";state.hintShown=false;return
+    }
+    const idx=state.current;
+    const q=state.questions[idx];
+    if(!q){box.innerHTML="<b>⚠️</b> لا توجد بيانات";box.style.display="block";state.hintShown=true;return}
+    const grp=HINTS[q.t];
+    if(grp&&grp.items&&grp.items.length){
+      let html="<b>💡 "+grp.title+"</b><br>";
+      for(let i=0;i<grp.items.length;i++){
+        html+="▸ "+grp.items[i];
+        if(i<grp.items.length-1)html+="<br>"
+      }
+      box.innerHTML=html
+    }else{
+      box.innerHTML="<b>💡 تلميح:</b> فكر في الكلمات المفتاحية في السؤال"
+    }
+    box.style.display="block";state.hintShown=true
+  }catch(e){
+    alert("حدث خطأ: "+e.message)
+  }
+}
+
+// Keywords per hint for smart matching
+const HINT_KEYWORDS = {
+  calculus:[["تفاضل","مشتق","معدل التغير","عداد السرعة"],["تعظيم","ربح","الإيراد الحدي","التكلفة الحدية"],["نهاية صغرى","المشتقة الثانية","موجبة"],["تكامل","تراكم","إجمالي","مساحة","منحنى","الدالة الأصلية"],["قيمة حالية","خصم","القيمة المستقبلية","معدل الخصم"],["فائض المستهلك","فائض","مستهلك"],["قرار حدي","مدير","وحدة إضافية"]],
+  functions:[["دالة","علاقة","متغير تابع"],["خطية","مستقيم","ميل","انحدار","ثابت","تناقص الغلة"],["تكعيبية","درجة ثالثة","S","مراحل الإنتاج","المنعطف"],["تربيعية","قطع مكافئ","القانون العام","عشرية","السالب"],["أسية","كرة الثلج","بسرعة متزايدة","التسعير الديناميكي"],["لوغاريتمية","فائدته تتناقص","الغني","الفقير","تناقص المنفعة"]],
+  equilibrium:[["التوازن الجزئي","مارشال","سوق منفردة","ثبات العوامل"],["Qd","Qs","شرط التوازن","تقاطع"],["طريقة الحذف","خطية وبسيطة","استبدال جبري","عزل السعر","التعويض العكسي"],["كرايمر","مصفوف","أنظمة معقدة","مشغل جبري","المحدد","ارتباط خطي","القطر الفرعي"],["قطاعان","الإنتاج","الإنفاق"],["ثلاث","حكومة"],["أربع","صادرات","الطلب الكلي"],["C = a + bY","الاستهلاك","الحد الأدنى"]],
+  taxes:[["قيمية","دوران","انحراف زاوي","ميل العرض"],["نوعية","مبلغ ثابت","انتقال موازي"],["عديم المرونة","المستهلك","كامل العبء"],["مرن","عرض غير مرن","المنتج","العبء الأكبر"],["الإسفين الضريبي","الفرق","سعر المستهلك","سعر المنتج"],["السالبة","العلاقة العكسية","السعر والكمية"],["غير مرن","لا يتأثر","تغير السعر"]],
+  methodology:[["ثبات","العوامل الأخرى","متغير واحد فقط"],["متغيرين","متغير واحد","التأثير المتزامن"],["الاقتصاد الرياضي","نماذج","استدلالية","تجريدية"],["الاقتصاد القياسي","إحصاء","التحقق التجريبي","تقدير المعلمات"],["نقطة ضعف","يفشل","الأزمات","غير الرشيدة","السلوكية","النوعية"],["ظهور","القرن","التاسع عشر","1870","كعلم"]]
+};
+
+function showResult(){
+  $("testMode").classList.add("hidden");$("resultMode").classList.remove("hidden");
+  const t=state.questions.length,c=state.correct,p=Math.round(c/t*100);
+  let emoji,title,msg;
+  if(p>=90){emoji="🏆";title="ممتاز!";msg="عبقري! مستواك متقدم جداً في الاقتصاد الرياضي"}
+  else if(p>=75){emoji="🌟";title="جيد جداً!";msg="أداء رائع، لديك فهم قوي للمادة"}
+  else if(p>=60){emoji="👍";title="جيد";msg="أداء مقبول، حاول المراجعة أكثر"}
+  else if(p>=40){emoji="📚";title="بحاجة للمراجعة";msg="حاول الدراسة أكثر والتركيز على النقاط الأساسية"}
+  else{emoji="💪";title="تحتاج للعمل";msg="لا تستسلم، راجع المادة وحاول مرة أخرى"}
+  $("resultEmoji").textContent=emoji;$("resultTitle").textContent=title;
+  $("resultScore").textContent=p+"%";
+  $("resultDetails").textContent=c+" من "+t+" إجابات صحيحة";
+  $("resultMsg").textContent=msg;
+  // Summary stats
+  const wrongCount=state.history.filter(h=>!h.isCorrect).length;
+  $("resultSummary").innerHTML=
+    `<div class="stat total"><div class="stat-num">${t}</div><div class="stat-lbl">إجمالي</div></div>`+
+    `<div class="stat correct"><div class="stat-num">${c}</div><div class="stat-lbl">صحيح</div></div>`+
+    `<div class="stat wrong"><div class="stat-num">${wrongCount}</div><div class="stat-lbl">خطأ</div></div>`;
+  // Build all questions review
+  const list=$("reviewList");
+  let html="";
+  for(const h of state.history){
+    const ok=h.isCorrect;
+    const selLetter=L[h.selected],corLetter=L[h.correct];
+    const icon=ok?"✓":"✗";
+    html+=`<div class="r-item fade-in"><button class="r-head" onclick="toggleBody(this)"><span class="r-status ${ok?'ok':'fail'}">${icon}</span><span class="r-qnum">س${h.q.id}</span><span class="r-qtext">${h.q.q}</span><span class="r-arrow">▼</span></button><div class="r-body"><div class="r-ans yours ${ok?'ok':''}">${ok?'✅':'✕'} إجابتك: ${selLetter}) ${h.q.o[h.selected]}</div>`;
+    if(!ok){
+      html+=`<div class="r-ans correct">✓ الإجابة الصحيحة: ${corLetter}) ${h.q.o[h.correct]}</div>`
+    }
+    // Hint
+    const hi=HINTS[h.q.t];
+    if(hi&&hi.items&&hi.items.length){
+      const kw=HINT_KEYWORDS[h.q.t]||[];
+      let scores=hi.items.map((_,i)=>{
+        const k=kw[i]||[];let s=0;
+        for(const w of k){if(h.q.q.includes(w))s++;}
+        return{idx:i,score:s}
+      });
+      scores.sort((a,b)=>b.score-a.score);
+      const best=scores.filter(s=>s.score>0);
+      const pick=best.length?best[0]:scores[0];
+      html+=`<button class="r-hint-btn" onclick="reviewHint(this)">💡 تلميح</button><div class="r-hint-body">▸ ${hi.items[pick.idx]}</div>`
+    }
+    html+=`</div></div>`
+  }
+  list.innerHTML=html
+}
+
+function toggleBody(el){
+  el.classList.toggle("open");
+  const body=el.nextElementSibling;
+  body.classList.toggle("open")
+}
+
+function reviewHint(el){
+  const body=el.nextElementSibling;
+  body.classList.toggle("show")
+}
+
+function confirmExit(){if(confirm("هل تريد الخروج من الاختبار؟"))showMainMenu()}
+
+// ====== BROWSE ======
+function showBrowse(){
+  $("mainMenu").classList.add("hidden");$("keysMode").classList.add("hidden");
+  $("browseMode").classList.remove("hidden");renderBrowse()
+}
+function renderBrowse(){
+  const f=$("browseFilter").value,s=$("browseSearch").value,list=$("browseList");
+  let qs=QUESTIONS;
+  if(f!=="all")qs=qs.filter(q=>q.t===f);
+  if(s)qs=qs.filter(q=>q.q.includes(s)||q.o.some(o=>o.includes(s)));
+  if(qs.length===0){list.innerHTML='<div style="text-align:center;padding:30px;color:#aaa;font-size:1.1em">لا توجد نتائج للبحث</div>';return}
+  list.innerHTML=qs.map(q=>`<div class="browse-card fade-in"><div class="topic-tag">${TOPIC_ICONS[q.t]} ${TOPICS[q.t]}</div><div class="q"><strong>س${q.id}:</strong> ${q.q}</div><div style="margin:6px 0;padding-right:16px;color:#ccc;font-size:.9em">${q.o.map((o,i)=>`<div>${L[i]}) ${o}</div>`).join("")}</div><div class="a">✓ الإجابة الصحيحة: ${L[q.a]}) ${q.o[q.a]}</div></div>`).join("")
+}
+
+// ====== KEYS ======
+function showKeys(){
+  $("mainMenu").classList.add("hidden");$("browseMode").classList.add("hidden");
+  $("keysMode").classList.remove("hidden");
+  const c=$("keysContent");c.innerHTML="";
+  for(const[k,v]of Object.entries(HINTS)){
+    if(v.title&&v.items){
+      c.innerHTML+=`<div class="keys-section fade-in"><h3>${TOPIC_ICONS[k]} ${v.title}</h3><ul>${v.items.map(s=>`<li>${s}</li>`).join("")}</ul></div>`
+    }
+  }
+}
+</script>
+</body>
+</html>
